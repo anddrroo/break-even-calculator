@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Truck Break-Even Calculator</title>
+  <style>
+    :root {
+      --primary: #d9480f;
+      --primary-hover: #c93b05;
+      --primary-light: #fff4e6;
+      --secondary: #0c8599;
+      --secondary-light: #e3fafc;
+      --dark: #1f2937;
+      --gray-700: #374151;
+      --gray-600: #4b5563;
+      --gray-500: #6b7280;
+      --gray-300: #d1d5db;
+      --gray-200: #e5e7eb;
+      --gray-100: #f3f4f6;
+      --gray-50: #f9fafb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --error-bg: #fef2f2;
+      --error-border: #f87171;
+      --error-text: #991b1b;
+      --success-bg: #f0fdf4;
+      --success-border: #86efac;
+      --success-text: #166534;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg);
+      color: var(--dark);
+      line-height: 1.5;
+      padding: 24px 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .badge-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border-radius: 50%;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(217, 72, 15, 0.15);
+    }
+
+    .badge-icon svg {
+      width: 32px;
+      height: 32px;
+      fill: currentColor;
+    }
+
+    h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--dark);
+      letter-spacing: -0.025em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 1.025rem;
+      color: var(--gray-600);
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    /* Explanation Section */
+    .explanation-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid var(--secondary);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+    }
+
+    .explanation-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .explanation-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .explanation-title svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--secondary);
+      flex-shrink: 0;
+    }
+
+    .explanation-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--gray-500);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .explanation-body {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--gray-100);
+      font-size: 0.925rem;
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+
+    .explanation-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+
+    .explanation-pill {
+      background-color: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 0.825rem;
+    }
+
+    .explanation-pill strong {
+      display: block;
+      color: var(--dark);
+      font-size: 0.875rem;
+      margin-bottom: 3px;
+    }
+
+    .formula-tag {
+      background-color: var(--secondary-light);
+      color: #0b7285;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.85rem;
+      display: inline-block;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    /* Form Inputs */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+
+    .helper-text {
+      font-size: 0.825rem;
+      color: var(--gray-500);
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .currency-symbol {
+      position: absolute;
+      left: 14px;
+      color: var(--gray-500);
+      font-weight: 600;
+      font-size: 1.15rem;
+      pointer-events: none;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      min-height: 48px;
+      padding: 10px 14px 10px 32px;
+      font-size: 1.05rem; /* 16px+ prevents mobile Safari auto-zoom */
+      font-weight: 500;
+      color: var(--dark);
+      background-color: #fff;
+      border: 1.5px solid var(--gray-300);
+      border-radius: var(--radius-sm);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      -webkit-appearance: none;
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(217, 72, 15, 0.18);
+    }
+
+    input[type="number"].input-error {
+      border-color: var(--error-border);
+      background-color: #fffbfa;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+    }
+
+    .field-error-msg {
+      display: none;
+      font-size: 0.8rem;
+      color: var(--error-text);
+      font-weight: 500;
+      margin-top: 5px;
+    }
+
+    /* Button Group (Mobile Responsive) */
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      min-height: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
+      border: none;
+      padding: 0 18px;
+      touch-action: manipulation;
+    }
+
+    .btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 5px rgba(217, 72, 15, 0.25);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background-color: var(--gray-100);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-300);
+    }
+
+    .btn-secondary:hover {
+      background-color: #e5e7eb;
+      color: var(--dark);
+    }
+
+    .quick-example {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: var(--secondary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 8px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-link:hover {
+      color: #0b7285;
+    }
+
+    /* Friendly Error Alert Banner */
+    .message-box {
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .message-box.error {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background-color: var(--error-bg);
+      border: 1px solid var(--error-border);
+      color: var(--error-text);
+    }
+
+    .message-box svg {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      margin-top: 1px;
+      fill: currentColor;
+    }
+
+    .message-box-content {
+      flex: 1;
+    }
+
+    .message-box-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+    }
+
+    .message-box p {
+      font-size: 0.9rem;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    /* Results Card */
+    #results {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    .results-hero {
+      background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+      border: 1.5px solid #fed7aa;
+      border-radius: 12px;
+      padding: 22px 18px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .results-hero-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .results-hero-value {
+      font-size: 2.75rem;
+      font-weight: 800;
+      color: #9a3412;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .results-hero-sub {
+      font-size: 0.925rem;
+      color: var(--gray-700);
+      font-weight: 500;
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .metric-card {
+      background-color: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+
+    .metric-title {
+      font-size: 0.775rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .metric-val {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    /* Step-by-Step Breakdown */
+    .breakdown-box {
+      border-top: 1px solid var(--gray-200);
+      padding-top: 20px;
+    }
+
+    .breakdown-box h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+      font-size: 0.925rem;
+    }
+
+    .step-number {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background-color: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-content {
+      flex: 1;
+      line-height: 1.5;
+    }
+
+    .step-math {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background-color: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      padding: 4px 10px;
+      display: inline-block;
+      margin-top: 6px;
+      color: #0f172a;
+      font-size: 0.875rem;
+      word-break: break-all;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.825rem;
+      color: var(--gray-500);
+      margin-top: 12px;
+      padding-bottom: 16px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile Responsive Optimizations */
+    @media (max-width: 600px) {
+      body {
+        padding: 16px 12px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .subtitle {
+        font-size: 0.925rem;
+      }
+
+      .card {
+        padding: 18px 14px;
+        margin-bottom: 16px;
+      }
+
+      .explanation-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .btn-group {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .btn {
+        width: 100%;
+        min-height: 52px;
+        font-size: 1.05rem;
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .results-hero-value {
+        font-size: 2.3rem;
+      }
+
+      .results-hero {
+        padding: 18px 14px;
+      }
+
+      .step-item {
+        font-size: 0.875rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="badge-icon" aria-hidden="true">
+        <!-- Food Truck SVG -->
+        <svg viewBox="0 0 24 24">
+          <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM17 12V9.5h2.5l1.88 2.5H17zM7 7h4v2H7V7zm-2 0h1v2H5V7z"/>
+        </svg>
+      </div>
+      <h1>Food Truck Break-Even Calculator</h1>
+      <p class="subtitle">Quickly determine how many meals you need to sell each day to cover all your costs and start taking home a profit.</p>
+    </header>
+
+    <!-- Short Explanation: How Break-Even Works -->
+    <section class="explanation-card" aria-labelledby="howItWorksTitle">
+      <div class="explanation-header" id="explanationToggle" role="button" tabindex="0" aria-expanded="true" aria-controls="explanationContent">
+        <div class="explanation-title" id="howItWorksTitle">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 .88-.36 1.68-.93 2.25z"/>
+          </svg>
+          <span>How the Break-Even Calculation Works</span>
+        </div>
+        <button type="button" class="explanation-toggle-btn" id="toggleText">
+          Hide Details &minus;
+        </button>
+      </div>
+
+      <div class="explanation-body" id="explanationContent">
+        <p>
+          Every meal you sell brings in money, but part of that money immediately goes toward food ingredients and takeout packaging. The remaining cash is your <strong>Contribution Margin</strong>—the real profit that chips away at your daily overhead bills until you break even:
+        </p>
+        
+        <div class="explanation-grid">
+          <div class="explanation-pill">
+            <strong>1. Fixed Overhead</strong>
+            Bills you owe even if you sell 0 meals (gas, permits, loan, prep kitchen).
+          </div>
+          <div class="explanation-pill">
+            <strong>2. Meal Cost</strong>
+            What you spend per plate (meat, buns, sauces, boxes, napkins).
+          </div>
+          <div class="explanation-pill">
+            <strong>3. Margin per Meal</strong>
+            Price minus Meal Cost. Every sale pays down your fixed overhead!
+          </div>
+        </div>
+
+        <div>
+          <strong>The Break-Even Formula:</strong><br>
+          <span class="formula-tag">Break-Even Meals = Daily Fixed Costs &divide; (Selling Price &minus; Cost to Make One Meal)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Friendly Error Alert Banner -->
+    <div id="errorBox" class="message-box" role="alert" aria-live="assertive">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+      </svg>
+      <div class="message-box-content">
+        <div class="message-box-title" id="errorTitle">Action Needed</div>
+        <p id="errorMessage"></p>
+      </div>
+    </div>
+
+    <!-- Main Input Form -->
+    <main class="card">
+      <form id="calculatorForm" novalidate>
+        <!-- Daily Fixed Costs -->
+        <div class="form-group">
+          <label for="fixedCosts">Daily Fixed Costs ($)</label>
+          <div class="helper-text">Truck loan/lease, commissary fees, permits, generator fuel, parking, etc.</div>
+          <div class="input-wrapper">
+            <span class="currency-symbol">$</span>
+            <input 
+              type="number" 
+              id="fixedCosts" 
+              placeholder="e.g. 250.00" 
+              step="any" 
+              min="0" 
+              inputmode="decimal"
+              required
+            >
+          </div>
+          <div class="field-error-msg" id="fixedCostsError"></div>
+        </div>
+
+        <!-- Selling Price Per Meal -->
+        <div class="form-group">
+          <label for="sellingPrice">Selling Price Per Meal ($)</label>
+          <div class="helper-text">The average ticket or menu price a customer pays for one meal.</div>
+          <div class="input-wrapper">
+            <span class="currency-symbol">$</span>
+            <input 
+              type="number" 
+              id="sellingPrice" 
+              placeholder="e.g. 14.00" 
+              step="any" 
+              min="0" 
+              inputmode="decimal"
+              required
+            >
+          </div>
+          <div class="field-error-msg" id="sellingPriceError"></div>
+        </div>
+
+        <!-- Cost to Make One Meal -->
+        <div class="form-group">
+          <label for="mealCost">Cost to Make One Meal ($)</label>
+          <div class="helper-text">Ingredients, sauces, packaging, takeout box, cutlery, napkins, etc.</div>
+          <div class="input-wrapper">
+            <span class="currency-symbol">$</span>
+            <input 
+              type="number" 
+              id="mealCost" 
+              placeholder="e.g. 4.50" 
+              step="any" 
+              min="0" 
+              inputmode="decimal"
+              required
+            >
+          </div>
+          <div class="field-error-msg" id="mealCostError"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary" id="calcBtn">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/>
+            </svg>
+            Calculate Break-Even
+          </button>
+          
+          <!-- Dedicated Reset Button -->
+          <button type="button" class="btn btn-secondary" id="resetBtn" title="Clear inputs and start over">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+            </svg>
+            Reset
+          </button>
+        </div>
+
+        <div class="quick-example">
+          <button type="button" class="btn-link" id="exampleBtn">
+            ✨ Try with a realistic taco truck example ($240 costs / $14.50 meal / $4.50 food cost)
+          </button>
+        </div>
+      </form>
+    </main>
+
+    <!-- Calculation Results Section -->
+    <section id="results" class="card" aria-live="polite">
+      <!-- Target Hero -->
+      <div class="results-hero">
+        <div class="results-hero-label">Daily Break-Even Target</div>
+        <div class="results-hero-value" id="mealsNeededDisplay">0 meals</div>
+        <div class="results-hero-sub" id="exactMealsSub">Sell at least this many meals each day to break even.</div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-title">Profit Margin Per Meal</div>
+          <div class="metric-val" id="marginDisplay">$0.00</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Profit Margin Ratio</div>
+          <div class="metric-val" id="marginRatioDisplay">0%</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Break-Even Sales Revenue</div>
+          <div class="metric-val" id="revenueDisplay">$0.00</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">Total Variable Costs</div>
+          <div class="metric-val" id="variableCostTotalDisplay">$0.00</div>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Breakdown -->
+      <div class="breakdown-box">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>
+          How Your Numbers Add Up
+        </h3>
+
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <strong>Find your Contribution Margin per meal:</strong><br>
+            Selling Price minus Cost to Make.<br>
+            <span class="step-math" id="step1Math">Price - Cost = Margin</span>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <strong>Calculate the exact meals required:</strong><br>
+            Divide daily fixed overhead by the margin made on each meal.<br>
+            <span class="step-math" id="step2Math">Fixed Costs ÷ Margin = Exact Meals</span>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <strong>Round up to whole meals:</strong><br>
+            Because meals are sold whole, you need to sell <strong id="step3Target">0</strong> meals to make sure all costs are 100% covered. Every meal sold after that is pure profit in your pocket!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Food Truck Break-Even Calculator &bull; Works 100% offline &bull; No data leaves your device
+    </footer>
+  </div>
+
+  <script>
+    // DOM Elements
+    const form = document.getElementById('calculatorForm');
+    const fixedCostsInput = document.getElementById('fixedCosts');
+    const sellingPriceInput = document.getElementById('sellingPrice');
+    const mealCostInput = document.getElementById('mealCost');
+    const resetBtn = document.getElementById('resetBtn');
+    const exampleBtn = document.getElementById('exampleBtn');
+
+    // Inline Field Error Labels
+    const fixedCostsError = document.getElementById('fixedCostsError');
+    const sellingPriceError = document.getElementById('sellingPriceError');
+    const mealCostError = document.getElementById('mealCostError');
+
+    // Top Error Alert
+    const errorBox = document.getElementById('errorBox');
+    const errorTitle = document.getElementById('errorTitle');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // How It Works Toggle
+    const explanationToggle = document.getElementById('explanationToggle');
+    const explanationContent = document.getElementById('explanationContent');
+    const toggleText = document.getElementById('toggleText');
+
+    // Results Elements
+    const resultsSection = document.getElementById('results');
+    const mealsNeededDisplay = document.getElementById('mealsNeededDisplay');
+    const exactMealsSub = document.getElementById('exactMealsSub');
+    const marginDisplay = document.getElementById('marginDisplay');
+    const marginRatioDisplay = document.getElementById('marginRatioDisplay');
+    const revenueDisplay = document.getElementById('revenueDisplay');
+    const variableCostTotalDisplay = document.getElementById('variableCostTotalDisplay');
+
+    const step1Math = document.getElementById('step1Math');
+    const step2Math = document.getElementById('step2Math');
+    const step3Target = document.getElementById('step3Target');
+
+    // Utility: Format currency nicely
+    function formatMoney(amount) {
+      return '$' + Number(amount).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    // Toggle "How It Works" Section
+    function toggleExplanation() {
+      const isVisible = explanationContent.style.display !== 'none';
+      if (isVisible) {
+        explanationContent.style.display = 'none';
+        toggleText.innerHTML = 'Show Details &plus;';
+        explanationToggle.setAttribute('aria-expanded', 'false');
+      } else {
+        explanationContent.style.display = 'block';
+        toggleText.innerHTML = 'Hide Details &minus;';
+        explanationToggle.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    explanationToggle.addEventListener('click', toggleExplanation);
+    explanationToggle.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleExplanation();
+      }
+    });
+
+    // Reset error states
+    function clearErrors() {
+      errorBox.className = 'message-box';
+      errorBox.style.display = 'none';
+      errorMessage.textContent = '';
+
+      [fixedCostsInput, sellingPriceInput, mealCostInput].forEach(input => {
+        input.classList.remove('input-error');
+      });
+
+      [fixedCostsError, sellingPriceError, mealCostError].forEach(el => {
+        el.style.display = 'none';
+        el.textContent = '';
+      });
+    }
+
+    // Friendly Error Display
+    function showFriendlyError(title, message, problematicInput, inlineLabel) {
+      resultsSection.style.display = 'none';
+      errorTitle.textContent = title;
+      errorMessage.textContent = message;
+      errorBox.className = 'message-box error';
+      errorBox.style.display = 'flex';
+
+      if (problematicInput) {
+        problematicInput.classList.add('input-error');
+        problematicInput.focus();
+      }
+
+      if (inlineLabel && message) {
+        inlineLabel.textContent = message;
+        inlineLabel.style.display = 'block';
+      }
+
+      // Smooth scroll up to error if off screen on mobile
+      errorBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Main Calculation
+    function performCalculation() {
+      clearErrors();
+
+      const fixedCostsStr = fixedCostsInput.value.trim();
+      const sellingPriceStr = sellingPriceInput.value.trim();
+      const mealCostStr = mealCostInput.value.trim();
+
+      // 1. Check for empty fields with friendly guidance
+      if (fixedCostsStr === '') {
+        showFriendlyError(
+          'Missing Fixed Costs',
+          'Please enter your daily fixed overhead costs. If you have no fixed costs today, you can enter 0.',
+          fixedCostsInput,
+          fixedCostsError
+        );
+        return;
+      }
+
+      if (sellingPriceStr === '') {
+        showFriendlyError(
+          'Missing Selling Price',
+          'Please enter the selling price per meal so we can calculate how much revenue each plate generates.',
+          sellingPriceInput,
+          sellingPriceError
+        );
+        return;
+      }
+
+      if (mealCostStr === '') {
+        showFriendlyError(
+          'Missing Meal Cost',
+          'Please enter what it costs to prepare one meal (ingredients, container, napkins).',
+          mealCostInput,
+          mealCostError
+        );
+        return;
+      }
+
+      const fixedCosts = parseFloat(fixedCostsStr);
+      const sellingPrice = parseFloat(sellingPriceStr);
+      const mealCost = parseFloat(mealCostStr);
+
+      // 2. Validate valid numeric values
+      if (isNaN(fixedCosts) || isNaN(sellingPrice) || isNaN(mealCost)) {
+        showFriendlyError(
+          'Invalid Numbers',
+          'Please enter valid dollar amounts using numbers and decimal points.'
+        );
+        return;
+      }
+
+      // 3. Check for negative numbers
+      if (fixedCosts < 0) {
+        showFriendlyError(
+          'Negative Fixed Costs',
+          'Daily fixed costs cannot be a negative dollar amount.',
+          fixedCostsInput,
+          fixedCostsError
+        );
+        return;
+      }
+
+      if (sellingPrice < 0) {
+        showFriendlyError(
+          'Negative Selling Price',
+          'Selling price per meal cannot be negative.',
+          sellingPriceInput,
+          sellingPriceError
+        );
+        return;
+      }
+
+      if (mealCost < 0) {
+        showFriendlyError(
+          'Negative Cost per Meal',
+          'Cost to make a meal cannot be negative.',
+          mealCostInput,
+          mealCostError
+        );
+        return;
+      }
+
+      // 4. Selling price must be greater than zero
+      if (sellingPrice === 0) {
+        showFriendlyError(
+          'Price Must Be Above $0',
+          'Your selling price must be greater than $0.00 so each meal generates revenue.',
+          sellingPriceInput,
+          sellingPriceError
+        );
+        return;
+      }
+
+      // 5. Financial Validation & Division by Zero Prevention
+      const contributionMargin = sellingPrice - mealCost;
+
+      // Selling price exactly equals meal cost (Margin is $0.00 -> Division by zero)
+      if (Math.abs(contributionMargin) < 0.000001) {
+        showFriendlyError(
+          'No Profit Margin per Meal ($0.00)',
+          'Your selling price (' + formatMoney(sellingPrice) + ') exactly equals your cost to make a meal (' + formatMoney(mealCost) + '). Because you make $0.00 profit per meal, you will never be able to cover your fixed costs. Please increase your price or reduce food costs.',
+          sellingPriceInput,
+          sellingPriceError
+        );
+        return;
+      }
+
+      // Selling price is lower than meal cost (Losing money on every meal)
+      if (contributionMargin < 0) {
+        const lossAmount = Math.abs(contributionMargin);
+        showFriendlyError(
+          'Selling at a Loss',
+          'Your meal cost (' + formatMoney(mealCost) + ') is higher than your selling price (' + formatMoney(sellingPrice) + '). You would lose ' + formatMoney(lossAmount) + ' on every single meal served! Raise your price or lower prep costs.',
+          sellingPriceInput,
+          sellingPriceError
+        );
+        return;
+      }
+
+      // 6. Valid calculations
+      const exactBreakEven = fixedCosts === 0 ? 0 : (fixedCosts / contributionMargin);
+      const wholeBreakEven = Math.ceil(exactBreakEven);
+      const marginRatio = (contributionMargin / sellingPrice) * 100;
+      const totalRevenueNeeded = wholeBreakEven * sellingPrice;
+      const totalVariableCosts = wholeBreakEven * mealCost;
+
+      // Populate Hero Metric
+      mealsNeededDisplay.textContent = wholeBreakEven.toLocaleString() + (wholeBreakEven === 1 ? ' meal' : ' meals');
+      if (exactBreakEven === wholeBreakEven || fixedCosts === 0) {
+        exactMealsSub.textContent = 'Selling ' + wholeBreakEven + ' meals will exactly cover your ' + formatMoney(fixedCosts) + ' in daily overhead.';
+      } else {
+        exactMealsSub.textContent = 'Exact math: ' + exactBreakEven.toFixed(2) + ' meals. Round up to ' + wholeBreakEven + ' meals to guarantee full cost coverage.';
+      }
+
+      // Populate Metric Cards
+      marginDisplay.textContent = formatMoney(contributionMargin);
+      marginRatioDisplay.textContent = marginRatio.toFixed(1) + '%';
+      revenueDisplay.textContent = formatMoney(totalRevenueNeeded);
+      variableCostTotalDisplay.textContent = formatMoney(totalVariableCosts);
+
+      // Populate Step-by-Step Breakdown
+      step1Math.textContent = formatMoney(sellingPrice) + ' (Price) - ' + formatMoney(mealCost) + ' (Cost) = ' + formatMoney(contributionMargin) + ' profit per meal';
+      step2Math.textContent = formatMoney(fixedCosts) + ' (Fixed Costs) ÷ ' + formatMoney(contributionMargin) + ' (Margin) = ' + exactBreakEven.toFixed(2) + ' meals';
+      step3Target.textContent = wholeBreakEven.toLocaleString();
+
+      // Show Results
+      resultsSection.style.display = 'block';
+
+      // Mobile friendly auto-scroll to the results
+      setTimeout(() => {
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 50);
+    }
+
+    // Reset Function
+    function resetCalculator() {
+      clearErrors();
+      form.reset();
+      resultsSection.style.display = 'none';
+      fixedCostsInput.focus();
+      // Scroll smoothly back to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Preset Example
+    function loadExample() {
+      clearErrors();
+      fixedCostsInput.value = '240.00';
+      sellingPriceInput.value = '14.50';
+      mealCostInput.value = '4.50';
+      performCalculation();
+    }
+
+    // Event Listeners
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      performCalculation();
+    });
+
+    resetBtn.addEventListener('click', resetCalculator);
+    exampleBtn.addEventListener('click', loadExample);
+
+    // Clear individual errors when user types
+    [fixedCostsInput, sellingPriceInput, mealCostInput].forEach(input => {
+      input.addEventListener('input', () => {
+        if (input.classList.contains('input-error')) {
+          input.classList.remove('input-error');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
