@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Food Truck Break-Even Calculator</title>
+  <title>Food Truck Break-Even & Profit Calculator</title>
   <style>
     :root {
       --primary: #d9480f;
@@ -11,6 +11,10 @@
       --primary-light: #fff4e6;
       --secondary: #0c8599;
       --secondary-light: #e3fafc;
+      --success: #15803d;
+      --success-light: #f0fdf4;
+      --success-border: #86efac;
+      --success-dark: #166534;
       --dark: #1f2937;
       --gray-700: #374151;
       --gray-600: #4b5563;
@@ -24,9 +28,6 @@
       --error-bg: #fef2f2;
       --error-border: #f87171;
       --error-text: #991b1b;
-      --success-bg: #f0fdf4;
-      --success-border: #86efac;
-      --success-text: #166534;
       --radius: 14px;
       --radius-sm: 8px;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
@@ -54,7 +55,7 @@
 
     .container {
       width: 100%;
-      max-width: 680px;
+      max-width: 720px;
       margin: 0 auto;
     }
 
@@ -94,7 +95,7 @@
     .subtitle {
       font-size: 1.025rem;
       color: var(--gray-600);
-      max-width: 540px;
+      max-width: 560px;
       margin: 0 auto;
     }
 
@@ -203,12 +204,27 @@
       margin-bottom: 20px;
     }
 
+    .label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
     label {
-      display: block;
       font-size: 0.95rem;
       font-weight: 600;
       color: var(--gray-700);
-      margin-bottom: 4px;
+    }
+
+    .optional-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      background-color: var(--gray-100);
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
     }
 
     .helper-text {
@@ -271,6 +287,20 @@
       color: var(--error-text);
       font-weight: 500;
       margin-top: 5px;
+    }
+
+    /* Profit Goal Input Highlight */
+    .profit-goal-group {
+      background: #fdfcfb;
+      border: 1px dashed #fdba74;
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 22px;
+    }
+
+    .profit-goal-group input[type="number"]:focus {
+      border-color: var(--success);
+      box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.18);
     }
 
     /* Button Group (Mobile Responsive) */
@@ -395,42 +425,103 @@
       margin: 0;
     }
 
-    /* Results Card */
+    /* Results Section */
     #results {
       display: none;
       animation: fadeIn 0.25s ease-in-out;
     }
 
-    .results-hero {
+    /* Milestone Comparison Grid (Break-Even vs. Profit Target) */
+    .targets-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .target-card {
+      border-radius: 12px;
+      padding: 20px 18px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Break-Even Target Card */
+    .target-card.breakeven {
       background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
       border: 1.5px solid #fed7aa;
-      border-radius: 12px;
-      padding: 22px 18px;
-      text-align: center;
-      margin-bottom: 20px;
     }
 
-    .results-hero-label {
-      font-size: 0.85rem;
+    .target-card.breakeven .target-tag {
+      color: var(--primary);
+    }
+
+    .target-card.breakeven .target-number {
+      color: #9a3412;
+    }
+
+    /* Profit Goal Target Card */
+    .target-card.profit {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border: 1.5px solid var(--success-border);
+    }
+
+    .target-card.profit .target-tag {
+      color: var(--success);
+    }
+
+    .target-card.profit .target-number {
+      color: #14532d;
+    }
+
+    .target-tag {
+      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 6px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
-    .results-hero-value {
-      font-size: 2.75rem;
+    .target-number {
+      font-size: 2.5rem;
       font-weight: 800;
-      color: #9a3412;
       line-height: 1.1;
       margin-bottom: 6px;
     }
 
-    .results-hero-sub {
-      font-size: 0.925rem;
+    .target-sub {
+      font-size: 0.875rem;
       color: var(--gray-700);
       font-weight: 500;
+      line-height: 1.4;
+    }
+
+    /* Milestone Banner */
+    .milestone-banner {
+      background-color: #f8fafc;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 0.925rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.5;
+    }
+
+    .milestone-banner svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--primary);
+      flex-shrink: 0;
     }
 
     /* Metrics Grid */
@@ -556,6 +647,15 @@
         gap: 8px;
       }
 
+      .targets-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .target-number {
+        font-size: 2.2rem;
+      }
+
       .btn-group {
         grid-template-columns: 1fr;
         gap: 10px;
@@ -570,14 +670,6 @@
       .metrics-grid {
         grid-template-columns: 1fr;
         gap: 10px;
-      }
-
-      .results-hero-value {
-        font-size: 2.3rem;
-      }
-
-      .results-hero {
-        padding: 18px 14px;
       }
 
       .step-item {
@@ -597,8 +689,8 @@
           <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM17 12V9.5h2.5l1.88 2.5H17zM7 7h4v2H7V7zm-2 0h1v2H5V7z"/>
         </svg>
       </div>
-      <h1>Food Truck Break-Even Calculator</h1>
-      <p class="subtitle">Quickly determine how many meals you need to sell each day to cover all your costs and start taking home a profit.</p>
+      <h1>Food Truck Break-Even & Profit Calculator</h1>
+      <p class="subtitle">Figure out how many meals you must sell each day to cover all your costs and hit your take-home profit goal.</p>
     </header>
 
     <!-- Short Explanation: How Break-Even Works -->
@@ -608,7 +700,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 .88-.36 1.68-.93 2.25z"/>
           </svg>
-          <span>How the Break-Even Calculation Works</span>
+          <span>How Break-Even & Profit Goals Work</span>
         </div>
         <button type="button" class="explanation-toggle-btn" id="toggleText">
           Hide Details &minus;
@@ -617,27 +709,28 @@
 
       <div class="explanation-body" id="explanationContent">
         <p>
-          Every meal you sell brings in money, but part of that money immediately goes toward food ingredients and takeout packaging. The remaining cash is your <strong>Contribution Margin</strong>—the real profit that chips away at your daily overhead bills until you break even:
+          Every meal sold covers its own ingredients and packaging. The remaining cash is your <strong>Contribution Margin</strong>—the real profit that first pays off your daily overhead bills (break-even), and then goes straight into your pocket as take-home profit:
         </p>
         
         <div class="explanation-grid">
           <div class="explanation-pill">
             <strong>1. Fixed Overhead</strong>
-            Bills you owe even if you sell 0 meals (gas, permits, loan, prep kitchen).
+            Bills you pay even if you sell 0 meals (gas, permits, loan, prep kitchen).
           </div>
           <div class="explanation-pill">
             <strong>2. Meal Cost</strong>
             What you spend per plate (meat, buns, sauces, boxes, napkins).
           </div>
           <div class="explanation-pill">
-            <strong>3. Margin per Meal</strong>
-            Price minus Meal Cost. Every sale pays down your fixed overhead!
+            <strong>3. Contribution Margin</strong>
+            Price minus Meal Cost. Every sale pays down bills or builds your profit!
           </div>
         </div>
 
         <div>
-          <strong>The Break-Even Formula:</strong><br>
-          <span class="formula-tag">Break-Even Meals = Daily Fixed Costs &divide; (Selling Price &minus; Cost to Make One Meal)</span>
+          <strong>The Calculations:</strong><br>
+          <span class="formula-tag">Break-Even Meals = Daily Fixed Costs &divide; Contribution Margin</span><br>
+          <span class="formula-tag" style="background-color: var(--success-light); color: var(--success-dark); margin-top: 8px;">Profit Goal Meals = (Daily Fixed Costs + Desired Profit) &divide; Contribution Margin</span>
         </div>
       </div>
     </section>
@@ -658,7 +751,9 @@
       <form id="calculatorForm" novalidate>
         <!-- Daily Fixed Costs -->
         <div class="form-group">
-          <label for="fixedCosts">Daily Fixed Costs ($)</label>
+          <div class="label-row">
+            <label for="fixedCosts">Daily Fixed Costs ($)</label>
+          </div>
           <div class="helper-text">Truck loan/lease, commissary fees, permits, generator fuel, parking, etc.</div>
           <div class="input-wrapper">
             <span class="currency-symbol">$</span>
@@ -677,7 +772,9 @@
 
         <!-- Selling Price Per Meal -->
         <div class="form-group">
-          <label for="sellingPrice">Selling Price Per Meal ($)</label>
+          <div class="label-row">
+            <label for="sellingPrice">Selling Price Per Meal ($)</label>
+          </div>
           <div class="helper-text">The average ticket or menu price a customer pays for one meal.</div>
           <div class="input-wrapper">
             <span class="currency-symbol">$</span>
@@ -696,7 +793,9 @@
 
         <!-- Cost to Make One Meal -->
         <div class="form-group">
-          <label for="mealCost">Cost to Make One Meal ($)</label>
+          <div class="label-row">
+            <label for="mealCost">Cost to Make One Meal ($)</label>
+          </div>
           <div class="helper-text">Ingredients, sauces, packaging, takeout box, cutlery, napkins, etc.</div>
           <div class="input-wrapper">
             <span class="currency-symbol">$</span>
@@ -713,13 +812,34 @@
           <div class="field-error-msg" id="mealCostError"></div>
         </div>
 
+        <!-- Target Profit Goal ($) -->
+        <div class="form-group profit-goal-group">
+          <div class="label-row">
+            <label for="targetProfit" style="color: #9a3412;">Target Profit Goal ($)</label>
+            <span class="optional-badge">Optional</span>
+          </div>
+          <div class="helper-text">How much take-home profit you want to pocket today (e.g. $150.00). Leave at 0 or empty for break-even only.</div>
+          <div class="input-wrapper">
+            <span class="currency-symbol">$</span>
+            <input 
+              type="number" 
+              id="targetProfit" 
+              placeholder="0.00" 
+              step="any" 
+              min="0" 
+              inputmode="decimal"
+            >
+          </div>
+          <div class="field-error-msg" id="targetProfitError"></div>
+        </div>
+
         <!-- Action Buttons -->
         <div class="btn-group">
           <button type="submit" class="btn btn-primary" id="calcBtn">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/>
             </svg>
-            Calculate Break-Even
+            Calculate Meals Needed
           </button>
           
           <!-- Dedicated Reset Button -->
@@ -733,7 +853,7 @@
 
         <div class="quick-example">
           <button type="button" class="btn-link" id="exampleBtn">
-            ✨ Try with a realistic taco truck example ($240 costs / $14.50 meal / $4.50 food cost)
+            ✨ Try with a realistic taco truck example ($240 costs / $14.50 price / $4.50 cost / $150 profit)
           </button>
         </div>
       </form>
@@ -741,17 +861,40 @@
 
     <!-- Calculation Results Section -->
     <section id="results" class="card" aria-live="polite">
-      <!-- Target Hero -->
-      <div class="results-hero">
-        <div class="results-hero-label">Daily Break-Even Target</div>
-        <div class="results-hero-value" id="mealsNeededDisplay">0 meals</div>
-        <div class="results-hero-sub" id="exactMealsSub">Sell at least this many meals each day to break even.</div>
+      
+      <!-- Side-by-Side Target Milestones (Break-Even vs. Profit Target) -->
+      <div class="targets-grid" id="targetsGrid">
+        <!-- Milestone 1: Break-Even -->
+        <div class="target-card breakeven">
+          <div class="target-tag">
+            <span>1. Break-Even Target</span>
+          </div>
+          <div class="target-number" id="breakEvenMealsDisplay">0 meals</div>
+          <div class="target-sub" id="breakEvenMealsSub">Covers 100% of daily costs ($0 profit)</div>
+        </div>
+
+        <!-- Milestone 2: Target Profit -->
+        <div class="target-card profit" id="profitTargetCard">
+          <div class="target-tag">
+            <span>2. Profit Goal Target</span>
+          </div>
+          <div class="target-number" id="profitGoalMealsDisplay">0 meals</div>
+          <div class="target-sub" id="profitGoalMealsSub">Covers all costs + hits your profit goal</div>
+        </div>
+      </div>
+
+      <!-- Plain English Milestone Summary Banner -->
+      <div class="milestone-banner" id="milestoneBanner">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+        <span id="milestoneBannerText"></span>
       </div>
 
       <!-- Quick Metrics Grid -->
       <div class="metrics-grid">
         <div class="metric-card">
-          <div class="metric-title">Profit Margin Per Meal</div>
+          <div class="metric-title">Margin Per Meal</div>
           <div class="metric-val" id="marginDisplay">$0.00</div>
         </div>
         <div class="metric-card">
@@ -760,11 +903,11 @@
         </div>
         <div class="metric-card">
           <div class="metric-title">Break-Even Sales Revenue</div>
-          <div class="metric-val" id="revenueDisplay">$0.00</div>
+          <div class="metric-val" id="breakEvenRevenueDisplay">$0.00</div>
         </div>
         <div class="metric-card">
-          <div class="metric-title">Total Variable Costs</div>
-          <div class="metric-val" id="variableCostTotalDisplay">$0.00</div>
+          <div class="metric-title" id="goalRevenueTitle">Profit Goal Sales Revenue</div>
+          <div class="metric-val" id="goalRevenueDisplay">$0.00</div>
         </div>
       </div>
 
@@ -789,17 +932,26 @@
         <div class="step-item">
           <div class="step-number">2</div>
           <div class="step-content">
-            <strong>Calculate the exact meals required:</strong><br>
-            Divide daily fixed overhead by the margin made on each meal.<br>
-            <span class="step-math" id="step2Math">Fixed Costs ÷ Margin = Exact Meals</span>
+            <strong>Calculate meals needed to break even:</strong><br>
+            Divide daily fixed overhead by your margin per meal.<br>
+            <span class="step-math" id="step2Math">Fixed Costs ÷ Margin = Break-Even Meals</span>
+          </div>
+        </div>
+
+        <div class="step-item" id="step3ProfitItem">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <strong>Calculate meals to hit your profit goal:</strong><br>
+            Add desired profit to fixed overhead, then divide by your margin per meal.<br>
+            <span class="step-math" id="step3Math">(Fixed Costs + Target Profit) ÷ Margin = Goal Meals</span>
           </div>
         </div>
 
         <div class="step-item">
-          <div class="step-number">3</div>
-          <div class="step-content">
+          <div class="step-number" id="stepFinalNumber">4</div>
+          <div class="step-content" id="stepFinalContent">
             <strong>Round up to whole meals:</strong><br>
-            Because meals are sold whole, you need to sell <strong id="step3Target">0</strong> meals to make sure all costs are 100% covered. Every meal sold after that is pure profit in your pocket!
+            Because you only sell whole portions, you must sell <strong id="stepTargetMeals">0</strong> meals to meet your goal.
           </div>
         </div>
       </div>
@@ -816,6 +968,7 @@
     const fixedCostsInput = document.getElementById('fixedCosts');
     const sellingPriceInput = document.getElementById('sellingPrice');
     const mealCostInput = document.getElementById('mealCost');
+    const targetProfitInput = document.getElementById('targetProfit');
     const resetBtn = document.getElementById('resetBtn');
     const exampleBtn = document.getElementById('exampleBtn');
 
@@ -823,6 +976,7 @@
     const fixedCostsError = document.getElementById('fixedCostsError');
     const sellingPriceError = document.getElementById('sellingPriceError');
     const mealCostError = document.getElementById('mealCostError');
+    const targetProfitError = document.getElementById('targetProfitError');
 
     // Top Error Alert
     const errorBox = document.getElementById('errorBox');
@@ -836,16 +990,29 @@
 
     // Results Elements
     const resultsSection = document.getElementById('results');
-    const mealsNeededDisplay = document.getElementById('mealsNeededDisplay');
-    const exactMealsSub = document.getElementById('exactMealsSub');
+    const breakEvenMealsDisplay = document.getElementById('breakEvenMealsDisplay');
+    const breakEvenMealsSub = document.getElementById('breakEvenMealsSub');
+    const profitTargetCard = document.getElementById('profitTargetCard');
+    const profitGoalMealsDisplay = document.getElementById('profitGoalMealsDisplay');
+    const profitGoalMealsSub = document.getElementById('profitGoalMealsSub');
+    const targetsGrid = document.getElementById('targetsGrid');
+
+    const milestoneBanner = document.getElementById('milestoneBanner');
+    const milestoneBannerText = document.getElementById('milestoneBannerText');
+
     const marginDisplay = document.getElementById('marginDisplay');
     const marginRatioDisplay = document.getElementById('marginRatioDisplay');
-    const revenueDisplay = document.getElementById('revenueDisplay');
-    const variableCostTotalDisplay = document.getElementById('variableCostTotalDisplay');
+    const breakEvenRevenueDisplay = document.getElementById('breakEvenRevenueDisplay');
+    const goalRevenueTitle = document.getElementById('goalRevenueTitle');
+    const goalRevenueDisplay = document.getElementById('goalRevenueDisplay');
 
     const step1Math = document.getElementById('step1Math');
     const step2Math = document.getElementById('step2Math');
-    const step3Target = document.getElementById('step3Target');
+    const step3ProfitItem = document.getElementById('step3ProfitItem');
+    const step3Math = document.getElementById('step3Math');
+    const stepFinalNumber = document.getElementById('stepFinalNumber');
+    const stepFinalContent = document.getElementById('stepFinalContent');
+    const stepTargetMeals = document.getElementById('stepTargetMeals');
 
     // Utility: Format currency nicely
     function formatMoney(amount) {
@@ -883,11 +1050,11 @@
       errorBox.style.display = 'none';
       errorMessage.textContent = '';
 
-      [fixedCostsInput, sellingPriceInput, mealCostInput].forEach(input => {
+      [fixedCostsInput, sellingPriceInput, mealCostInput, targetProfitInput].forEach(input => {
         input.classList.remove('input-error');
       });
 
-      [fixedCostsError, sellingPriceError, mealCostError].forEach(el => {
+      [fixedCostsError, sellingPriceError, mealCostError, targetProfitError].forEach(el => {
         el.style.display = 'none';
         el.textContent = '';
       });
@@ -922,8 +1089,9 @@
       const fixedCostsStr = fixedCostsInput.value.trim();
       const sellingPriceStr = sellingPriceInput.value.trim();
       const mealCostStr = mealCostInput.value.trim();
+      const targetProfitStr = targetProfitInput.value.trim();
 
-      // 1. Check for empty fields with friendly guidance
+      // 1. Check for required empty fields with friendly guidance
       if (fixedCostsStr === '') {
         showFriendlyError(
           'Missing Fixed Costs',
@@ -958,8 +1126,14 @@
       const sellingPrice = parseFloat(sellingPriceStr);
       const mealCost = parseFloat(mealCostStr);
 
+      // Target Profit is optional: defaults to 0 if left blank
+      let targetProfit = 0;
+      if (targetProfitStr !== '') {
+        targetProfit = parseFloat(targetProfitStr);
+      }
+
       // 2. Validate valid numeric values
-      if (isNaN(fixedCosts) || isNaN(sellingPrice) || isNaN(mealCost)) {
+      if (isNaN(fixedCosts) || isNaN(sellingPrice) || isNaN(mealCost) || isNaN(targetProfit)) {
         showFriendlyError(
           'Invalid Numbers',
           'Please enter valid dollar amounts using numbers and decimal points.'
@@ -998,6 +1172,16 @@
         return;
       }
 
+      if (targetProfit < 0) {
+        showFriendlyError(
+          'Negative Target Profit',
+          'Target profit cannot be negative. If you only want to calculate break-even, enter 0 or leave it empty.',
+          targetProfitInput,
+          targetProfitError
+        );
+        return;
+      }
+
       // 4. Selling price must be greater than zero
       if (sellingPrice === 0) {
         showFriendlyError(
@@ -1016,7 +1200,7 @@
       if (Math.abs(contributionMargin) < 0.000001) {
         showFriendlyError(
           'No Profit Margin per Meal ($0.00)',
-          'Your selling price (' + formatMoney(sellingPrice) + ') exactly equals your cost to make a meal (' + formatMoney(mealCost) + '). Because you make $0.00 profit per meal, you will never be able to cover your fixed costs. Please increase your price or reduce food costs.',
+          'Your selling price (' + formatMoney(sellingPrice) + ') exactly equals your cost to make a meal (' + formatMoney(mealCost) + '). Because you make $0.00 profit per meal, you will never be able to cover your fixed costs or make a profit. Please increase your price or reduce food costs.',
           sellingPriceInput,
           sellingPriceError
         );
@@ -1036,32 +1220,76 @@
       }
 
       // 6. Valid calculations
+      // Break-even
       const exactBreakEven = fixedCosts === 0 ? 0 : (fixedCosts / contributionMargin);
       const wholeBreakEven = Math.ceil(exactBreakEven);
+      const breakEvenRevenue = wholeBreakEven * sellingPrice;
+
+      // Profit Goal Target
+      const totalGoalNeeded = fixedCosts + targetProfit;
+      const exactGoalMeals = totalGoalNeeded === 0 ? 0 : (totalGoalNeeded / contributionMargin);
+      const wholeGoalMeals = Math.ceil(exactGoalMeals);
+      const goalRevenue = wholeGoalMeals * sellingPrice;
+      const additionalMealsForProfit = Math.max(0, wholeGoalMeals - wholeBreakEven);
+
       const marginRatio = (contributionMargin / sellingPrice) * 100;
-      const totalRevenueNeeded = wholeBreakEven * sellingPrice;
-      const totalVariableCosts = wholeBreakEven * mealCost;
 
-      // Populate Hero Metric
-      mealsNeededDisplay.textContent = wholeBreakEven.toLocaleString() + (wholeBreakEven === 1 ? ' meal' : ' meals');
-      if (exactBreakEven === wholeBreakEven || fixedCosts === 0) {
-        exactMealsSub.textContent = 'Selling ' + wholeBreakEven + ' meals will exactly cover your ' + formatMoney(fixedCosts) + ' in daily overhead.';
-      } else {
-        exactMealsSub.textContent = 'Exact math: ' + exactBreakEven.toFixed(2) + ' meals. Round up to ' + wholeBreakEven + ' meals to guarantee full cost coverage.';
-      }
+      // Populate Break-Even Milestone
+      breakEvenMealsDisplay.textContent = wholeBreakEven.toLocaleString() + (wholeBreakEven === 1 ? ' meal' : ' meals');
+      breakEvenMealsSub.textContent = 'Covers your ' + formatMoney(fixedCosts) + ' fixed costs ($0 profit).';
 
-      // Populate Metric Cards
+      // Populate Metrics Grid
       marginDisplay.textContent = formatMoney(contributionMargin);
       marginRatioDisplay.textContent = marginRatio.toFixed(1) + '%';
-      revenueDisplay.textContent = formatMoney(totalRevenueNeeded);
-      variableCostTotalDisplay.textContent = formatMoney(totalVariableCosts);
+      breakEvenRevenueDisplay.textContent = formatMoney(breakEvenRevenue);
 
-      // Populate Step-by-Step Breakdown
-      step1Math.textContent = formatMoney(sellingPrice) + ' (Price) - ' + formatMoney(mealCost) + ' (Cost) = ' + formatMoney(contributionMargin) + ' profit per meal';
+      // Handle Display when Target Profit is entered vs. 0
+      const hasProfitGoal = targetProfit > 0;
+
+      if (hasProfitGoal) {
+        // Show Profit Target Card
+        profitTargetCard.style.display = 'flex';
+        targetsGrid.style.gridTemplateColumns = window.innerWidth <= 600 ? '1fr' : '1fr 1fr';
+        profitGoalMealsDisplay.textContent = wholeGoalMeals.toLocaleString() + (wholeGoalMeals === 1 ? ' meal' : ' meals');
+        profitGoalMealsSub.textContent = 'Pockets ' + formatMoney(targetProfit) + ' profit after all costs are paid.';
+
+        // Milestone Summary Banner
+        milestoneBanner.style.display = 'flex';
+        milestoneBannerText.innerHTML = 'Sell <strong>' + wholeBreakEven + ' meals</strong> to cover your daily overhead, then just <strong>' + additionalMealsForProfit + ' more ' + (additionalMealsForProfit === 1 ? 'meal' : 'meals') + '</strong> to pocket your <strong>' + formatMoney(targetProfit) + '</strong> profit goal!';
+
+        // Revenue Card Title
+        goalRevenueTitle.textContent = 'Profit Goal Sales Revenue';
+        goalRevenueDisplay.textContent = formatMoney(goalRevenue);
+
+        // Step-by-Step Breakdown with Profit Goal
+        step3ProfitItem.style.display = 'flex';
+        step3Math.textContent = '(' + formatMoney(fixedCosts) + ' costs + ' + formatMoney(targetProfit) + ' profit) ÷ ' + formatMoney(contributionMargin) + ' margin = ' + exactGoalMeals.toFixed(2) + ' meals';
+        
+        stepFinalNumber.textContent = '4';
+        stepFinalContent.innerHTML = '<strong>Round up to whole meals:</strong><br>Sell at least <strong>' + wholeBreakEven + ' meals</strong> to break even, and <strong>' + wholeGoalMeals + ' meals</strong> to guarantee you achieve your ' + formatMoney(targetProfit) + ' profit goal.';
+        stepTargetMeals.textContent = wholeGoalMeals.toLocaleString();
+      } else {
+        // If Target Profit is $0, streamline view to focus on Break-Even
+        profitTargetCard.style.display = 'none';
+        targetsGrid.style.gridTemplateColumns = '1fr';
+
+        milestoneBanner.style.display = 'flex';
+        milestoneBannerText.innerHTML = 'Sell <strong>' + wholeBreakEven + ' meals</strong> to completely cover your <strong>' + formatMoney(fixedCosts) + '</strong> daily costs. Every meal sold after that is pure profit!';
+
+        goalRevenueTitle.textContent = 'Profit at Break-Even';
+        goalRevenueDisplay.textContent = '$0.00 (all costs covered)';
+
+        step3ProfitItem.style.display = 'none';
+        stepFinalNumber.textContent = '3';
+        stepFinalContent.innerHTML = '<strong>Round up to whole meals:</strong><br>Because meals are sold in whole units, you need <strong>' + wholeBreakEven + ' meals</strong> to ensure full cost coverage. Enter a profit goal above anytime to see how many more meals to sell for extra profit!';
+        stepTargetMeals.textContent = wholeBreakEven.toLocaleString();
+      }
+
+      // Step 1 & 2 Breakdown
+      step1Math.textContent = formatMoney(sellingPrice) + ' (Price) - ' + formatMoney(mealCost) + ' (Cost) = ' + formatMoney(contributionMargin) + ' margin per meal';
       step2Math.textContent = formatMoney(fixedCosts) + ' (Fixed Costs) ÷ ' + formatMoney(contributionMargin) + ' (Margin) = ' + exactBreakEven.toFixed(2) + ' meals';
-      step3Target.textContent = wholeBreakEven.toLocaleString();
 
-      // Show Results
+      // Show Results Section
       resultsSection.style.display = 'block';
 
       // Mobile friendly auto-scroll to the results
@@ -1086,6 +1314,7 @@
       fixedCostsInput.value = '240.00';
       sellingPriceInput.value = '14.50';
       mealCostInput.value = '4.50';
+      targetProfitInput.value = '150.00';
       performCalculation();
     }
 
@@ -1099,7 +1328,7 @@
     exampleBtn.addEventListener('click', loadExample);
 
     // Clear individual errors when user types
-    [fixedCostsInput, sellingPriceInput, mealCostInput].forEach(input => {
+    [fixedCostsInput, sellingPriceInput, mealCostInput, targetProfitInput].forEach(input => {
       input.addEventListener('input', () => {
         if (input.classList.contains('input-error')) {
           input.classList.remove('input-error');
